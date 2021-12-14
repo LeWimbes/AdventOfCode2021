@@ -1,8 +1,7 @@
 fun readResource(path: String) = object {}.javaClass.getResource(path)?.readText()
 
-inline fun <T, R> Iterable<T>.flatMapNotNull(transform: (T) -> Iterable<R>?): List<R> {
-    return flatMapNotNullTo(ArrayList(), transform)
-}
+inline fun <T, R> Iterable<T>.flatMapNotNull(transform: (T) -> Iterable<R>?): List<R> =
+    flatMapNotNullTo(ArrayList(), transform)
 
 inline fun <T, R, C : MutableCollection<in R>> Iterable<T>.flatMapNotNullTo(
     destination: C,
@@ -28,4 +27,14 @@ fun <T> Collection<T>.permutations(): Set<List<T>> {
             add(sub + elem)
         }
     }
+}
+
+fun <T> Iterable<T>.eachCountLong(): Map<T, Long> = this.eachCountLongTo(LinkedHashMap())
+
+fun <T, M : MutableMap<in T, Long>> Iterable<T>.eachCountLongTo(destination: M): M {
+    this.forEach { key ->
+        val count = destination[key] ?: 0
+        destination[key] = count + 1
+    }
+    return destination
 }
